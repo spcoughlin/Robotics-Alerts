@@ -3,6 +3,7 @@ import imaplib
 import email
 from email.header import decode_header
 import smtplib
+import datetime
 
 config_key = "v@f82f82f8v@2f8"  # send this in the channel you want to configure bot
 
@@ -29,6 +30,13 @@ async def on_message(message):  # called every time a message is sent, even the 
         channel_configured = True
 
         await config_message.clear_reactions()
+
+    if message.content.startswith(".help"):
+        await message.channel.send("Commands: | .help - Brings up this panel | .website - links the hours website |")
+
+    if message.content.startswith(".website"):
+        await message.channel.send("https://arvigo6015.pythonanywhere.com/")
+
 
     # after the channel has been set, the bot starts searching for emails with this account
     username = "roboticsalerts@gmail.com"
@@ -57,14 +65,14 @@ async def on_message(message):  # called every time a message is sent, even the 
                     subject, encoding = decode_header(msg["Subject"])[0]
                     if isinstance(subject, bytes):
                         # if it's a bytes, decode to str
-                        subject = subject.decode(encoding)
+                        subject = str(subject.decode(encoding))
                     # decode email sender
                     From, encoding = decode_header(msg.get("From"))[0]
                     if isinstance(From, bytes):
                         From = str(From.decode(encoding))
 
-                    if From == "Samantha Delaney <samantha.delaney@bchigh.edu>":
-                        await toggle_reaction()
+                    if From == "Samantha Delaney <samantha.delaney@bchigh.edu>" or From == "Sean Coughlin <56spc56@gmail.com>":
+                        await fixed_channel.send("@everyone, Mrs. Delaney has sent an email with the subject:", subject + ".", "You should go read it!")
 
                         # here the bot sends an email to itself so it only pings once
                         server = smtplib.SMTP('smtp.gmail.com', 587)
@@ -81,21 +89,5 @@ async def on_message(message):  # called every time a message is sent, even the 
         # close the connection and logout
         imap.close()
         imap.logout()
-
-
-# method is called when email is found, this adds and removes a reaction on the config message
-async def toggle_reaction():
-    if channel_configured:
-        await config_message.add_reaction('\N{THUMBS UP SIGN}')
-        await config_message.clear_reactions()
-
-
-# called when the reaction is toggled
-@client.event
-async def on_reaction_add(reaction, user):
-    message = reaction.message
-    if message.id == config_message.id and reaction.me:
-        await fixed_channel.send("@everyone, Mrs. Delaney has sent an email. You should go read it!")
-
 
 client.run('OTQxNzU0NDQ5MTQyMDk1OTcz.YgajLQ.GIMnVRdznOPsnkShpB_EXLcMdBk')
