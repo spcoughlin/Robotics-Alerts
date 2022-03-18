@@ -35,35 +35,24 @@ class CalendarX:
 
         file.close()
 
-    def add_date(self, month, day, year, event, weekly):
-        try:
-            month = int(month)
-        except:
-            print("month is not an integer")
+    def add_date(self, month, day, year, event):
+        
+        try: month = int(month)
+        except: print("month is not an integer")
 
-        try:
-            day = int(day)
-        except:
-            print("day is not an integer")
+        try: day = int(day)
+        except: print("day is not an integer")
 
-        try:
-            year = int(year)
-        except:
-            print("year is not an integer")
+        try: year = int(year)
+        except: print("year is not an integer")
 
-        try:
-            event = str(event)
-        except:
-            print("event is not a string")
+        try: event = str(event)
+        except: print("event is not a string")
 
         datetime_date = datetime.date(year, month, day)
         ord_date = datetime_date.toordinal()
         
         calendar[ord_date] = event
-
-        if weekly:
-            for i in range(0, 365, 7):
-                calendar[ord_date + i] = event
 
 
     def compile_calendar(self):
@@ -80,9 +69,10 @@ class CalendarX:
             file.write(f"{e} : {calendar[i]}\n")
             o_list.append(f"{e} : {calendar[i]}\n")
 
+        calendar.clear()
+
         file.close()
-        return "".join(o_list)
-        
-
-        
-
+        if o_list != []:
+            return "".join(o_list)
+        else:
+            return "No Calendar Events"

@@ -20,17 +20,15 @@ from calendarx import CalendarX
 
 config_key = "v@f82f82f8v@2f8"
 
-client = discord.Client() 
-
-global bot
 bot = commands.Bot(command_prefix='$')
 
-@client.event
-async def on_ready():
-    print('We have logged in as {0.user}'.format(client))
+bot_calendar = CalendarX()
 
-    global bot_calendar
-    bot_calendar = CalendarX()
+@bot.event
+async def on_ready():
+    print('We have logged in as {0.user}'.format(bot))
+
+    
 
     def functionInNewThread():
         loop = asyncio.new_event_loop()
@@ -39,25 +37,25 @@ async def on_ready():
     thread = threading.Thread(target=functionInNewThread, daemon=True)
     thread.start()
 
-@client.event
+@bot.event
 async def on_message(message): 
 
     if message.content.startswith(config_key):
         global fixed_channel
         fixed_channel = discord.utils.get(message.guild.text_channels, name="generaled")
         name = fixed_channel.name
-        await fixed_channel.send('Channel Configured to {}'.format(name))      
+        await fixed_channel.send('Email Channel Configured to {}'.format(name))      
 
-    if message.content.startswith(".help"):
+    if message.content.startswith("help"):
         await message.channel.send("Commands: | .help - Brings up this panel | .website - links the hours website |")
 
-    if message.content.startswith(".website"):
+    if message.content.startswith("website"):
         await message.channel.send("https://arvigo6015.pythonanywhere.com/")
     
     await bot.process_commands(message)
 
 @bot.command()
-async def addevent(ctx, month, day, year, event, weekly):
+async def addevent(ctx, month, day, year, event):
 
     print("addevent command detected")
 
@@ -73,10 +71,7 @@ async def addevent(ctx, month, day, year, event, weekly):
     try: event = str(event)
     except: await ctx.channel.send("'event' parameter is not a string!")
 
-    try: weekly = bool(weekly)
-    except: await ctx.channel.send("'weekly' parameter is not a bool!")
-
-    bot_calendar.add_date(bot_calendar, month, day, year, event, weekly)
+    bot_calendar.add_date(month, day, year, event)
 
     await ctx.channel.send(f"{month, day, year} event added!")
 
@@ -88,8 +83,16 @@ async def calendar(ctx):
     await ctx.channel.send(bot_calendar.compile_calendar())
     
 @bot.command()
-async def test(ctx, arg):
-    await ctx.send(arg)
+async def clear_calendar(ctx):
+    '''
+    This can only be run by members with the 'administrator' permission
+    '''
+    if ctx.author.guild_permissions.administrator:
+        with open("calendar.txt",'w') as f: # clear file 
+            pass
+        await ctx.channel.send("Cleared Calendar")
+    else:
+        await ctx.channel.send("Insufficient Permissions")
 
 async def emailer():
     
@@ -137,4 +140,4 @@ async def emailer():
         imap.close()
         imap.logout()
 
-client.run('OTQxNzU0NDQ5MTQyMDk1OTcz.YgajLQ.GIMnVRdznOPsnkShpB_EXLcMdBk')
+bot.run('OTQxNzU0NDQ5MTQyMDk1OTcz.YgajLQ.GIMnVRdznOPsnkShpB_EXLcMdBk')

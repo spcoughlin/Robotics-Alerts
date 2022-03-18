@@ -7,5 +7,7 @@ Our team communicates via email, but we have some trouble checking our email for
 Commands:
 
 .help - help panel
+
 .website - links the team website
+
 enter key - configure the channel the bot will send updates in
