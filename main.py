@@ -72,7 +72,7 @@ async def on_message(message):  # called every time a message is sent, even the 
                         From = str(From.decode(encoding))
 
                     if From == "Samantha Delaney <samantha.delaney@bchigh.edu>" or From == "Sean Coughlin <56spc56@gmail.com>":
-                        await fixed_channel.send("@everyone, Mrs. Delaney has sent an email with the subject:", subject + ".", "You should go read it!")
+                        await fixed_channel.send("@everyone, Mrs. Delaney has sent an email. You should go read it!")
 
                         # here the bot sends an email to itself so it only pings once
                         server = smtplib.SMTP('smtp.gmail.com', 587)
