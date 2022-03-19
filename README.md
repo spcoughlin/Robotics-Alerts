@@ -10,4 +10,12 @@ Commands:
 
 .website - links the team website
 
-enter key - configure the channel the bot will send updates in
+.addevent month day year "event" - adds the event to the calendar on the specifies date
+
+.calendar - shows the calendar
+
+.clear_calendar - Clears the calendar. Can only be executed by members with admin perms
+
+enter config key - configure the channel the bot will send updates in
+
+
