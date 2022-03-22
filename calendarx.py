@@ -11,12 +11,22 @@ compile_calendar: combines all added dates with loaded dates, sorts them, and ou
 import datetime
 
 class CalendarX:
-    def __init__(self):
+
+    def __init__(self, guild_number):
+
         global calendar
         calendar = {}
 
+        self.guild = guild_number
+
+        try:
+            open("calendar_{}.txt".format(self.guild), "x")
+        except:
+            pass
+
     def load_config(self):
-        file = open("calendar.txt", "r")
+
+        file = open("calendar_{}.txt".format(self.guild), "r")
         filelist = file.readlines()
 
         keys = []
@@ -60,7 +70,7 @@ class CalendarX:
         self.load_config()
 
         keys = sorted(calendar)
-        file = open("calendar.txt", "w+")
+        file = open("calendar_{}.txt.".format(self.guild), "w+")
         filelist = file.readlines()
 
         o_list = []

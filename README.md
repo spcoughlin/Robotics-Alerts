@@ -16,6 +16,6 @@ Commands:
 
 .clear_calendar - Clears the calendar. Can only be executed by members with admin perms
 
-enter config key - configure the channel the bot will send updates in
+.config_channel - configure the channel the bot will send updates in
 
 

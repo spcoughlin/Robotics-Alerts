@@ -17,13 +17,11 @@ import smtplib
 import asyncio
 import threading
 from calendarx import CalendarX
-import datetime, time
-
-config_key = "v@f82f82f8v@2f8"
 
 bot = commands.Bot(command_prefix='.')
 
-bot_calendar = CalendarX()
+
+
 
 @bot.event
 async def on_ready():
@@ -33,39 +31,37 @@ async def on_ready():
         loop = asyncio.new_event_loop()
         loop.run_until_complete(emailer())
 
-    def anotherFunctionInAnotherNewThread():
-        loop_2 = asyncio.new_event_loop()
-        loop_2.run_until_complete(pod_alerts())
-
     thread = threading.Thread(target=functionInNewThread, daemon=True)
-    thread2 = threading.Thread(target=anotherFunctionInAnotherNewThread, daemon=True)
-    thread.start()
-    thread2.start()
+    thread.start() # start the emailer 
+
+@bot.event
+async def on_guild_join(guild):
+    global bot_calendar
+    bot_calendar = CalendarX(guild.id)
 
 @bot.event
 async def on_message(message): 
-    '''
-    This is the section for simple text responses that dont involve any processes, functions, etc
-
-    Use discord.py commands for things that do involve that
-    '''
-
-    if message.content.startswith(config_key):
-        global fixed_channel
-        fixed_channel = discord.utils.get(message.guild.text_channels, name="generaled")
-        name = fixed_channel.name
-        await fixed_channel.send('Email Channel Configured to {}'.format(name))      
-
-    if message.content.startswith(".help"):
-        await message.channel.send("Commands: | .help - Brings up this panel | .website - links the hours website |")
-
-    if message.content.startswith(".website"):
-        await message.channel.send("https://arvigo6015.pythonanywhere.com/")
     
     await bot.process_commands(message)
 
+# -- COMMANDS --
+
 @bot.command()
-async def addevent(ctx, month, day, year, event):
+async def config_channel(ctx):
+    global fixed_channel
+    fixed_channel = discord.utils.get(ctx.guild.text_channels, name="general")
+    await fixed_channel.send('Email Channel Configured to {}'.format("general")) 
+
+@bot.command()
+async def help(ctx):
+    ctx.channel.send("Commands: | .config_channel - configure the channel to send email updates in | .help - Brings up this pannel | .website - Links the hours website | .add_event <month, day, year, 'event'> - add an event to the calendar. Do not include the brackets, but include the apostrophes on 'event' for a multi-word description. | .calendar - show the calendar | .clear_calendar - wipes the calendar; can only be used by members with the 'administrator' permission |")
+
+@bot.command()
+async def website(ctx):
+    ctx.channel.send("https://arvigo6015.pythonanywhere.com/")
+
+@bot.command()
+async def add_event(ctx, month, day, year, event):
 
     try: month = int(month)
     except: await ctx.channel.send("'month' parameter is not an int!")
@@ -93,7 +89,7 @@ async def calendar(ctx):
 @bot.command()
 async def clear_calendar(ctx):
     '''
-    This can only be run by members with the 'administrator' permission, or me, because I am cool.
+    This can only be run by members with the 'administrator' permission
     '''
     if ctx.author.guild_permissions.administrator or ctx.author.name == "iiPanCake":
         with open("calendar.txt",'w') as f: # clear file 
@@ -102,24 +98,23 @@ async def clear_calendar(ctx):
     else:
         await ctx.channel.send("Insufficient Permissions")
 
-async def pod_alerts():
-    while True:
-        if datetime.datetime.now() == datetime.datetime(2022, 3, 19, 10, 45):
-            await fixed_channel.send("@everyone, Pod 1 - Your Matches Start in 15 minutes!")
-            time.sleep(100)
-
-        elif datetime.datetime.now() == datetime.datetime(2022, 3, 19, 12, 45):
-            await fixed_channel.send("@everyone, Pod 2 - Your Matches Start in 15 minutes!")
-            time.sleep(100)
-
-        elif datetime.datetime.now() == datetime.datetime(2022, 3, 19, 15, 45):
-            await fixed_channel.send("@everyone, Pod 3 - Your Matches Start in 15 minutes!")
-            time.sleep(100)
+# -- END COMMANDS -- 
 
 async def emailer():
-    
-    username = "roboticsalerts@gmail.com"
-    password = "R0b0t1cs"
+    '''
+    This is the daemon function for email updates. 
+
+    Make sure to run it on a separate thread!
+    '''
+
+    f = open("config_email.txt", "r")
+    config_email_list = f.readlines()
+
+    username = config_email_list[0]
+    password = config_email_list[1]
+    email1 = config_email_list[2]
+    email2 = config_email_list[3]
+    alert_message = config_email_list[4]
 
     while True:
 
@@ -145,8 +140,8 @@ async def emailer():
                     if isinstance(From, bytes):
                         From = str(From.decode(encoding))
 
-                    if From == "Samantha Delaney <samantha.delaney@bchigh.edu>" or From == "Sean Coughlin <56spc56@gmail.com>":
-                        await fixed_channel.send("@everyone, Mrs. Delaney has sent an email. You should go read it!")
+                    if From == email1 or From == email2:
+                        await fixed_channel.send(alert_message)
 
                         server = smtplib.SMTP('smtp.gmail.com', 587)
                         server.starttls()
