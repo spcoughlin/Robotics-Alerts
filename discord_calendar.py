@@ -9,7 +9,6 @@ compile_calendar: combines all added dates with loaded dates, sorts them, and ou
 '''
 
 import datetime
-from os.path import exists
 
 class DiscordCalendar:
 
