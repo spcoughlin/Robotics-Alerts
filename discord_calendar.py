@@ -9,24 +9,18 @@ compile_calendar: combines all added dates with loaded dates, sorts them, and ou
 '''
 
 import datetime
+from os.path import exists
 
-class CalendarX:
+class DiscordCalendar:
 
-    def __init__(self, guild_number):
+    def __init__(self):
 
         global calendar
         calendar = {}
 
-        self.guild = guild_number
-
-        try:
-            open("calendar_{}.txt".format(self.guild), "x")
-        except:
-            pass
-
     def load_config(self):
 
-        file = open("calendar_{}.txt".format(self.guild), "r")
+        file = open("calendar.txt", "r")
         filelist = file.readlines()
 
         keys = []
@@ -70,8 +64,7 @@ class CalendarX:
         self.load_config()
 
         keys = sorted(calendar)
-        file = open("calendar_{}.txt.".format(self.guild), "w+")
-        filelist = file.readlines()
+        file = open("calendar.txt", "w+")
 
         o_list = []
         for i in keys:

@@ -3,7 +3,7 @@ Computer Programming Quarter 3 Project - Robotics Discord Bot
 
 Written by Sean Coughlin
 
-Adapted From:
+Email References:
 https://www.thepythoncode.com/article/reading-emails-in-python
 https://realpython.com/python-send-email/#starting-a-secure-smtp-connection
 '''
@@ -16,12 +16,10 @@ from email.header import decode_header
 import smtplib
 import asyncio
 import threading
-from calendarx import CalendarX
+from discord_calendar import DiscordCalendar
 
 bot = commands.Bot(command_prefix='.')
-
-
-
+bot_calendar = DiscordCalendar()
 
 @bot.event
 async def on_ready():
@@ -32,16 +30,10 @@ async def on_ready():
         loop.run_until_complete(emailer())
 
     thread = threading.Thread(target=functionInNewThread, daemon=True)
-    thread.start() # start the emailer 
-
-@bot.event
-async def on_guild_join(guild):
-    global bot_calendar
-    bot_calendar = CalendarX(guild.id)
+    thread.start()
 
 @bot.event
 async def on_message(message): 
-    
     await bot.process_commands(message)
 
 # -- COMMANDS --
@@ -53,7 +45,7 @@ async def config_channel(ctx):
     await fixed_channel.send('Email Channel Configured to {}'.format("general")) 
 
 @bot.command()
-async def help(ctx):
+async def commands_list(ctx):
     ctx.channel.send("Commands: | .config_channel - configure the channel to send email updates in | .help - Brings up this pannel | .website - Links the hours website | .add_event <month, day, year, 'event'> - add an event to the calendar. Do not include the brackets, but include the apostrophes on 'event' for a multi-word description. | .calendar - show the calendar | .clear_calendar - wipes the calendar; can only be used by members with the 'administrator' permission |")
 
 @bot.command()
@@ -81,9 +73,6 @@ async def add_event(ctx, month, day, year, event):
 
 @bot.command()
 async def calendar(ctx):
-
-    print("calendar command detected")
-
     await ctx.channel.send(bot_calendar.compile_calendar())
     
 @bot.command()
