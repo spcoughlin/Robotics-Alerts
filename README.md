@@ -4,13 +4,13 @@ This project was built for my FRC robotics team, team 3958
 
 Our team communicates via email, but we have some trouble checking our email for updates from our moderator, so this bot will ping our discord server whenever the moderator sends an email.
 
-Commands:
+Commands ("[]" = parameters):
 
-.help - help panel
+.commands_list - help panel
 
 .website - links the team website
 
-.addevent month day year "event" - adds the event to the calendar on the specifies date
+.addevent [month day year "event"] - adds the event to the calendar on the specifies date
 
 .calendar - shows the calendar
 
