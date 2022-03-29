@@ -41,16 +41,16 @@ async def on_message(message):
 @bot.command()
 async def config_channel(ctx):
     global fixed_channel
-    fixed_channel = discord.utils.get(ctx.guild.text_channels, name="general")
-    await fixed_channel.send('Email Channel Configured to {}'.format("general")) 
+    fixed_channel = discord.utils.get(ctx.guild.text_channels, name="generaled")
+    await fixed_channel.send('Email Channel Configured to {}'.format("generaled")) 
 
 @bot.command()
 async def commands_list(ctx):
-    ctx.channel.send("Commands: | .config_channel - configure the channel to send email updates in | .help - Brings up this pannel | .website - Links the hours website | .add_event <month, day, year, 'event'> - add an event to the calendar. Do not include the brackets, but include the apostrophes on 'event' for a multi-word description. | .calendar - show the calendar | .clear_calendar - wipes the calendar; can only be used by members with the 'administrator' permission |")
+    await ctx.channel.send("Commands: \n.config_channel - configure the channel to send email updates in \n.commands_list - Brings up this pannel \n.website - Links the hours website \n.add_event <month, day, year, 'event'> - add an event to the calendar. Do not include the brackets, but include the apostrophes on 'event' for a multi-word description. \n.calendar - show the calendar \n.clear_calendar - wipes the calendar; can only be used by members with the 'administrator' permission ")
 
 @bot.command()
 async def website(ctx):
-    ctx.channel.send("https://arvigo6015.pythonanywhere.com/")
+    await ctx.channel.send("https://arvigo6015.pythonanywhere.com/")
 
 @bot.command()
 async def add_event(ctx, month, day, year, event):
