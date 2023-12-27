@@ -146,4 +146,4 @@ async def emailer():
         imap.close()
         imap.logout()
 
-bot.run('OTQxNzU0NDQ5MTQyMDk1OTcz.YgajLQ.GIMnVRdznOPsnkShpB_EXLcMdBk')
+bot.run('🤫🤫🤫')
